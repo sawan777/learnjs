@@ -34,3 +34,4 @@ function handler(req, res) {
 
 //create a server object:
 http.createServer(handler).listen(8080); //the serve
+console.log('Server started..');
