@@ -1,0 +1,19 @@
+{
+  "name": "learnjs",
+  "version": "0.1.0",
+  "description": "Just learning nodejs and FE js",
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sawan777/learnjs.git"
+  },
+  "author": "Sawan Tyagi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sawan777/learnjs/issues"
+  },
+  "homepage": "https://github.com/sawan777/learnjs#readme"
+}
