@@ -1,0 +1,9 @@
+<html>
+<body>
+    <ul>
+        <li>{{pl1}}</li>
+        <li>{{pl2}}</li>
+        <li>{{pl3}}</li>
+    </ul>
+</body>
+</html>

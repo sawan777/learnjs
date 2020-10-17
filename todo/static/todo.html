@@ -1,0 +1,127 @@
+<html>
+
+<head>
+    <title>ToDo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        ul {
+            margin: 0;
+            padding: 2;
+        }
+
+        /* Style the list items */
+        ul li {
+
+            list-style-type: none;
+            background: rgb(204, 199, 199);
+
+        }
+    </style>
+    <script>
+        setInterval(() => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", '/todo/get_todos', true);
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    // Request finished. Do processing here.
+                    let f = JSON.parse(xhr.responseText);
+                    if (f !== undefined) {
+
+                        let div_todo = document.getElementById('todo');
+                        let ul_new = document.createElement("ul");
+                        let li = document.createElement("li");
+                        li.className = 'mt-2';
+                        li.setAttribute('style', 'background-color:#eee;padding-left:10px');
+
+                        div_todo.appendChild(ul_new);
+                        ul_new.appendChild(li);
+                        li.innerHTML = '<input class="checkbox" type="checkbox" id="' + f[0].Id + '" onchange="checkboxClicked(this)">&nbsp;<label class="todo_text">' + f[0].text + '</label><button type="button" class = "float-right del_btn btn-sm" onclick = "todo_del(this)">&nbsp;x&nbsp;</button>';
+
+                    }
+                }
+            };
+            xhr.send();
+        }, 1000);
+
+        function do_process(url) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+
+        function checkboxClicked(checkbox) {
+            let chk_box = checkbox.parentElement.children;
+            if (checkbox.checked) {
+                chk_box[1].style['text-decoration'] = 'line-through';
+            }
+            else {
+                chk_box[1].style.removeProperty('text-decoration');
+            }
+            do_process('/todo/check_box?' + (checkbox.checked ? "" : "un") + 'chk_id_no=' + checkbox.id);
+
+        }
+
+
+        function todo_del(clicked) {
+
+            if (clicked.onclick) {
+                var div_a = clicked.parentElement;
+                div_a.style.display = "none";
+                let x = clicked.parentElement.children;
+                do_process('/todo/todo_del?del_arr_json=' + x[0].id);
+            }
+        }
+
+
+        function getData(url) {
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    // Request finished. Do processing here.
+                    let d = JSON.parse(xhr.responseText);
+                    renderTodo(d);
+                }
+            };
+            xhr.send();
+        }
+        function renderTodo(d) {
+            let div_todo = document.getElementById('todo');
+            div_todo.innerHTML = '';
+
+            for (let j = 0; j < d.length; j++) {
+
+                let ul_new = document.createElement("ul");
+                let li = document.createElement("li");
+                li.className = 'mt-2';
+                li.setAttribute('style', 'background-color:#eee;padding-left:10px');
+
+                div_todo.appendChild(ul_new);
+                ul_new.appendChild(li);
+                if (d[j].isDone == true) {
+                    li.innerHTML = '<input class="checkbox" type="checkbox" id="' + d[j].Id + '" onchange="checkboxClicked(this)" checked>&nbsp;<label class="todo_text" style="text-decoration:line-through;">' + d[j].text + '</label> <button type="button" class = "float-right btn-sm del_btn" onclick = "todo_del(this)">&nbsp;x&nbsp;</button>';
+                }
+                else {
+                    li.innerHTML = '<input class="checkbox" type="checkbox" id="' + d[j].Id + '" onchange="checkboxClicked(this)">&nbsp;<label class="todo_text">' + d[j].text + '</label><button type="button" class = "float-right del_btn btn-sm" onclick = "todo_del(this)">&nbsp;x&nbsp</button>';
+                }
+            }
+        }
+
+    </script>
+</head>
+
+<body onload="getData('/todo/get_todos?actions=refresh');">
+    <div class="container border">
+        <div class="col-sm-6 mt-5">
+            <a href="/todo/static/add_todo.html" target="_blank">
+                <button type="button" class='btn btn-success'>Add a Todo</button>
+            </a>
+        </div>
+        <br>
+        <div class="col-sm-6" id="todo"> </div>
+    </div>
+
+</body>
+
+</html>

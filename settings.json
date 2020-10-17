@@ -1,0 +1,10 @@
+{
+    "telemetry.enableTelemetry": false,
+    "C_Cpp.updateChannel": "Insiders",
+    "window.zoomLevel": 3,
+    "files.autoSave": "afterDelay",
+    "explorer.confirmDelete": false,
+    "files.associations": {
+        "*.ssp": "html"
+    }
+}

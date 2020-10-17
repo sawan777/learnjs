@@ -1,0 +1,60 @@
+<html>
+
+<head>
+    <title>Add ToDo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<script>
+    function msg() {
+        document.getElementById('demo').innerHTML = "";
+    }
+
+    function Add_Data(url) {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // Request finished. Do processing here.
+                document.getElementById("demo").innerHTML = "Todo list stored.";
+                document.getElementById('text').value = '';
+                document.getElementById('text').focus();
+                document.getElementById('todo_text').value = '';
+
+            }
+        };
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send();
+    }
+
+    function dataSend() {
+        let text = document.getElementById("text").value;
+        let todo_text = document.getElementById("todo_text").value;
+        if (text == "") {
+            window.alert("No Title found.......");
+        }
+        else {
+            let title = encodeURI(text);
+            let text_data = encodeURI(todo_text);
+            let url = '/todo/add_todo?text=' + title + '&text_todo=' + text_data;
+            Add_Data(url, text, todo_text);
+        }
+    }
+</script>
+
+<body>
+    <div class="container row mt-5">
+        <div class="col-sm-6">
+            <form autocomplete="off">
+                <input type="text" class="form-control" id="text" placeholder="Title....." autofocus required><br>
+                <textarea class="form-control" rows="5" id="todo_text"></textarea><br>
+                <input type="button" class='btn btn-success' value="Add a Todo" onclick="dataSend()">&nbsp;
+                &nbsp;
+                <button type="reset" class='btn btn-primary' onclick="msg()">cencel</button>&nbsp;
+            </form>
+            <br>
+            <p id="demo"></p>
+        </div>
+    </div>
+</body>
+
+</html>
