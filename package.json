@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sawan777/learnjs/issues"
   },
-  "homepage": "https://github.com/sawan777/learnjs#readme"
+  "homepage": "https://github.com/sawan777/learnjs#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.5"
+  }
 }
