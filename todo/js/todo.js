@@ -92,13 +92,17 @@ function todo_json(res, q) {
     else if (snapshot.todos.length != data_base.todos.length) {
         let incr_arr = [];
         for (k = 0; k < data_base.todos.length; k++) {
-            if (JSON.stringify(snapshot.todos[k]) !== JSON.stringify(data_base.todos[k])) {
+            if (snapshot.todos[k].Id !== data_base.todos[k].Id) {
                 incr_arr.push(data_base.todos[k]);
             }
         }
         res.writeHead(200, { 'content-type': 'text/html' });
         res.write(JSON.stringify(incr_arr));
         snapshot = recoverTodo();
+    }
+    else{
+        res.writeHead(200, { 'content-type': 'text/html' });
+        res.write("[]");
     }
     
     return res.end();

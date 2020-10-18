@@ -18,42 +18,29 @@
         }
     </style>
     <script>
-        function randerTodos(){           
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                // Request finished. Do processing here.
-                let f = JSON.parse(xhr.responseText);
-                if (f !== undefined) {
-
-                    let div_todo = document.getElementById('todo');
-                    let ul_new = document.createElement("ul");
-                    let li = document.createElement("li");
-                    li.className = 'mt-2';
-                    li.setAttribute('style', 'background-color:#eee;padding-left:10px');
-
-                    div_todo.appendChild(ul_new);
-                    ul_new.appendChild(li);
-                    li.innerHTML = '<input class="checkbox" type="checkbox" id="' + f[0].Id + '" onchange="checkboxClicked(this)">&nbsp;<label class="todo_text">' + f[0].text + '</label><button type="button" class = "float-right del_btn btn-sm" onclick = "todo_del(this)">&nbsp;x&nbsp;</button>';
-
-                }
-            }
-        }
-        function getTodosFromServer(){
+        
+        function httpGet(url){
             let xhr = new XMLHttpRequest();
-            xhr.open("GET", '/todo/get_todos', true);
+            xhr.open("GET", url, true);
             let promise = new Promise((resolve, reject) => {
                 xhr.onreadystatechange = () => {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if(xhr.status === 200) {
-                            // Request finished. Do processing here.
-                            let d = JSON.parse(xhr.responseText);
-                            console.log("d = ", d);
-                            resolve(d);
-                        }
-                        else{
-                            reject("Request failed, status:" + xhr.status);
+                    try {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if(xhr.status === 200) {
+                                // Request finished. Do processing here.
+                                let d = JSON.parse(xhr.responseText);
+                                console.log("d = ", d);
+                                resolve(d);
+                            }
+                            else{
+                                reject("Request failed, status:" + xhr.status);
+                            }
                         }
                     }
-                };
+                    catch(exp){
+                        reject("Request failed, status:" + exp.toString());
+                    }
+                };   
             });
             xhr.send();
             return promise;
@@ -64,19 +51,20 @@
             // return JSON.parse(xhr.responseText);
         }
 
-        function myOnLoad(){
-            let p = getTodosFromServer();
+        function myOnLoad(url){
+            let p = httpGet(url);
             p.then(renderTodo)
             .catch((error) => {
                 console.log("getTodosFromServer failed:", error);
             });
         }
-        // setInterval(() => {
-        //     getTodosFromServer()
-        //     .then(renderTodo);
-        //     // let todos = getTodosFromServer();
-        //     // renderTodos(todos);
-        // }, 100000);
+        setInterval(() => {
+            let p = httpGet('/todo/get_todos');
+            p.then(renderTodo)
+            .catch((error) => {
+                console.log("getTodosFromServer failed:", error);
+            });
+        }, 5000);
 
         function do_process(url) {
             let xhr = new XMLHttpRequest();
@@ -107,23 +95,8 @@
             }
         }
 
-
-        function getData(url) {
-
-            let xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.onreadystatechange = function () {
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    // Request finished. Do processing here.
-                    let d = JSON.parse(xhr.responseText);
-                    renderTodo(d);
-                }
-            };
-            xhr.send();
-        }
         function renderTodo(d) {
             let div_todo = document.getElementById('todo');
-            div_todo.innerHTML = '';
 
             for (let j = 0; j < d.length; j++) {
 
@@ -146,7 +119,7 @@
     </script>
 </head>
 
-<body onload="myOnLoad();">
+<body onload="myOnLoad('/todo/get_todos?actions=refresh');">
     <div class="container border">
         <div class="col-sm-6 mt-5">
             <a href="/todo/static/add_todo.html" target="_blank">

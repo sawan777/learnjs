@@ -15,7 +15,8 @@
             "internalConsoleOptions": "neverOpen",
             "skipFiles": [
                 "<node_internals>/**",
-                "**/static/**"
+                "**/static/**",
+                "${workspaceFolder}/todo/data/todos.json"
             ]
         },
         {
