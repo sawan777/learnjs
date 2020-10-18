@@ -7,6 +7,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "nodemon",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
+            "program": "${workspaceFolder}/web.js",
+            "restart": false,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "**/static/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "debug file",
             "skipFiles": [
                 "<node_internals>/**"
