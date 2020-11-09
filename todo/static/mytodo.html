@@ -96,8 +96,11 @@
         function viewModal(d){
             let modalTitle = document.getElementById('modalTitle');
             let modalBody = document.getElementById('modalBody');
-            modalTitle.innerHTML = d.text;
-            modalBody.innerHTML = d.text_todo;
+            let modalDate = document.getElementById('modalDate');
+            modalDate.parentElement.setAttribute('id', d.Id); 
+            modalTitle.innerHTML =`<input type="text" class="form-control text-info"  id="edit_text" value = "${d.text}">`;
+            modalBody.innerHTML = `<textarea class="form-control text-secondary" rows="5" id="edit_todo_text">${d.text_todo}</textarea>`;
+            modalDate.innerHTML = d.datetime;
         }
 
         function viewTodo(clicked){
@@ -114,7 +117,20 @@
         };
         xhr.send();
     }
-}
+}       
+    function edit_todo(clicked){
+        if(clicked.onclick){
+            let todo_title = document.getElementById('edit_text').value;
+            let todo_text = document.getElementById('edit_todo_text').value;
+                let li_id = clicked.parentElement.id;
+                let url = '/todo/todo_edit?edit_json=' +li_id+ '&todo_title=' +todo_title+ '&todo_text=' +todo_text;
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+        xhr.send();
+        let data_title = document.getElementById('data_title');
+        data_title.innerHTML = todo_title;
+    }
+    }
 
         function renderTodo(d) {
             let div_todo = document.getElementById('todo');
@@ -122,16 +138,16 @@
                 let li = document.createElement("li");
                 li.className = 'mt-2';
                 li.setAttribute('style', 'background-color:#eee;padding-left:10px');
-                li.setAttribute('id', `${d[j].Id}`);
+                li.setAttribute('id', d[j].Id);
                 div_todo.appendChild(li);
                 if (d[j].isDone == true) {
                     li.innerHTML = `<input class="checkbox" type="checkbox" onchange="checkboxClicked(this)" checked>
-                    &nbsp;<label class="todo_text" style="text-decoration:line-through;" data-toggle="modal" data-target="#exampleModal" onclick="viewTodo(this)">${d[j].text}</label>
+                    &nbsp;<label class="todo_text" style="text-decoration:line-through;" id = "data_title" data-toggle="modal" data-target="#exampleModal" onclick="viewTodo(this)">${d[j].text}</label>
                     <button type="button" class = "float-right btn-sm del_btn"  onclick = "todo_del(this)">&nbsp;x&nbsp;</button>`;
                 }
                 else {
                     li.innerHTML = `<input class="checkbox" type="checkbox" onchange="checkboxClicked(this)">
-                    &nbsp;<label class="todo_text" data-toggle="modal" data-target="#exampleModal" onclick = "viewTodo(this)">${d[j].text}</label>
+                    &nbsp;<label class="todo_text" data-toggle="modal" id = "data_title" data-target="#exampleModal" onclick = "viewTodo(this)">${d[j].text}</label>
                     <button type="button" class = "float-right btn-sm del_btn"  onclick = "todo_del(this)">&nbsp;x&nbsp;</button>`;
              }
             }
@@ -208,8 +224,9 @@
                 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                  <div class="modal" id="modalDate"> </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="edit_todo(this)">save changes</button>
               </div>
             </div>
           </div>
